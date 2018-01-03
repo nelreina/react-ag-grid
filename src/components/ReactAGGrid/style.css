@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  --padding-button-input: 0.6em 1em;
+}
+
+button {
+  box-sizing: border-box;
+  border-style: none;
+  padding: var(--padding-button-input);
+}
+input[type='text'] {
+  padding: var(--padding-button-input);
+  margin-right: 0.5em;
+}
+
+a {
+  margin-left: 0.5em;
+}
+.timer {
+  margin-top: 0.5em;
+}
