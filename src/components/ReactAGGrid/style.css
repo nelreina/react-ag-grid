@@ -8,7 +8,7 @@ button {
   border-style: none;
   padding: var(--padding-button-input);
 }
-input[type='text'] {
+.grid-form > input[type='text'] {
   padding: var(--padding-button-input);
   margin-right: 0.5em;
 }
@@ -18,4 +18,15 @@ a {
 }
 .timer {
   margin-top: 0.5em;
+}
+@media print {
+  button {
+    display: none;
+  }
+  input {
+    display: none;
+  }
+  a {
+    display: none;
+  }
 }

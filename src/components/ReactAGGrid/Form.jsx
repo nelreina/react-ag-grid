@@ -3,7 +3,7 @@ import React from 'react';
 /* eslint-disable react/prop-types */
 
 const Form = ({ search, textChange, clearFilter, searchText, loading }) => (
-  <form onSubmit={search} className="common-export-grid-form">
+  <form onSubmit={search} className="grid-form">
     <input
       disabled={loading}
       type="text"
