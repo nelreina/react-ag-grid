@@ -28,61 +28,66 @@ const coaStyle = params => {
   return amount;
 };
 
-const getStyledColumnDef = (columnDef, cellClicked) =>
-  columnDef.map(col => {
-    const ret = col;
-    switch (col.fieldType) {
-      case 'integer':
-      case 'percentage':
-        ret.cellStyle = number;
-        break;
-      case 'amount':
-        ret.cellStyle = params =>
-          !isNaN(params.value) ? amountStyle(params) : null;
-        ret.cellRenderer = params =>
-          !isNaN(params.value)
-            ? accounting.formatMoney(params.value, amountSettings)
-            : params.value;
-        break;
-      case 'date':
-        ret.cellRenderer = params =>
-          moment(params.value).isValid()
-            ? moment(params.value).format(dateFormat)
-            : params.value;
-        break;
-      case 'date-short':
-        ret.cellRenderer = params =>
-          moment(params.value).isValid()
-            ? moment(params.value).format(dateFormatShort)
-            : params.value;
+const mapColumns = col => {
+  const ret = col;
+  switch (col.fieldType) {
+    case 'integer':
+    case 'percentage':
+      ret.cellStyle = number;
+      break;
+    case 'amount':
+      ret.cellStyle = params =>
+        !isNaN(params.value) ? amountStyle(params) : null;
+      ret.cellRenderer = params =>
+        !isNaN(params.value)
+          ? accounting.formatMoney(params.value, amountSettings)
+          : params.value;
+      break;
+    case 'date':
+      ret.cellRenderer = params =>
+        moment(params.value).isValid()
+          ? moment(params.value).format(dateFormat)
+          : params.value;
+      break;
+    case 'date-short':
+      ret.cellRenderer = params =>
+        moment(params.value).isValid()
+          ? moment(params.value).format(dateFormatShort)
+          : params.value;
 
-        break;
-      case 'email-short':
-        ret.cellRenderer = params =>
-          params.value
-            .left(params.value.indexOf('@'))
-            .replaceAll('.', ' ')
-            .humanize()
-            .titleCase();
-        break;
-      case 'coa-amount':
-        ret.cellStyle = amountStyle;
-        ret.cellRenderer = coaAmount;
-        // ret.aggFunc = 'sum';
-        break;
-      case 'coa-amount-link':
-        ret.cellStyle = coaStyle;
-        ret.cellClass = 'link';
-        ret.cellRenderer = coaAmount;
-        ret.onCellClicked = cellClicked;
-        // ret.aggFunc = 'sum';
-        break;
-      default:
-        break;
-    }
-    ret.hide = col.initShow === 'N';
-    return ret;
-  });
+      break;
+    case 'email-short':
+      ret.cellRenderer = params =>
+        params.value
+          .left(params.value.indexOf('@'))
+          .replaceAll('.', ' ')
+          .humanize()
+          .titleCase();
+      break;
+    case 'coa-amount':
+      ret.cellStyle = amountStyle;
+      ret.cellRenderer = coaAmount;
+      // ret.aggFunc = 'sum';
+      break;
+    case 'coa-amount-link':
+      ret.cellStyle = coaStyle;
+      ret.cellClass = 'link';
+      ret.cellRenderer = coaAmount;
+      ret.onCellClicked = cellClicked;
+      // ret.aggFunc = 'sum';
+      break;
+    default:
+      if (col.group) {
+        ret.group = col.children.map(mapColumns);
+      }
+      break;
+  }
+  ret.hide = col.initShow === 'N';
+  return ret;
+};
+
+const getStyledColumnDef = (columnDef, cellClicked) =>
+  columnDef.map(mapColumns);
 
 const defaultColDef = {
   // set every column width
