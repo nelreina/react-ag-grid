@@ -23,7 +23,8 @@ export default class Grid extends Component {
     hideTimer: PropTypes.bool.isRequired,
     fileName: PropTypes.string.isRequired,
     lastLoadTime: PropTypes.number,
-    onCellClicked: PropTypes.func
+    onCellClicked: PropTypes.func,
+    options: PropTypes.object
   };
   static defaultProps = {
     rowData: undefined,
@@ -34,7 +35,8 @@ export default class Grid extends Component {
     lastLoadTime: 0,
     hideTimer: false,
     fileName: 'export',
-    theme: 'fresh'
+    theme: 'fresh',
+    options: {}
   };
   state = {
     quickFilterText: '',
@@ -111,7 +113,8 @@ export default class Grid extends Component {
       lastLoadTime,
       onCellClicked,
       hideTimer,
-      theme
+      theme,
+      options
     } = this.props;
     const styledColumnDef = getStyledColumnDef(columnDef, onCellClicked);
     let style = gridContainer;
@@ -128,7 +131,7 @@ export default class Grid extends Component {
     const totalRows = rowData ? rowData.length : 0;
     return (
       <section style={{ width: '100%', height: '100%' }}>
-        <div style={toolbar}>
+        <div className="grid-toolbar" style={toolbar}>
           <Form {...formProps} />
           <button
             disabled={loading}
@@ -145,10 +148,8 @@ export default class Grid extends Component {
             defaultColDef={defaultColDef}
             rowData={rowData}
             onGridReady={this.onGridReady}
-            enableSorting="true"
-            enableFilter="true"
-            enableColResize="true"
             quickFilterText={this.state.quickFilterText}
+            {...options}
           />
         </div>
         <div className="footer">
